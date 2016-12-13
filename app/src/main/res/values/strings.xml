@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">Chess</string>
+
+    <string-array name="activities_array">
+        <item>Play Chess</item>
+        <item>Recorded Games</item>
+    </string-array>
+
+    <string-array name="records_array">
+        <item>Game 1</item>
+        <item>Game 2</item>
+    </string-array>
+
+    <string name="activity1">Play Chess</string>
+    <string name="activity2">Recorded Games</string>
+    <string name="activity3">Game Playback</string>
+
+    <string name="undo">Undo</string>
+    <string name="next">Next</string>
+
+    <string name="name">Sort by Name</string>
+    <string name="date">Sort by Date</string>
+
+    <string name="ai">AI</string>
+    <string name="draw">Draw</string>
+    <string name="resign">Resign</string>
+</resources>

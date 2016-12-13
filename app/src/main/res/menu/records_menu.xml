@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:appcompat="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/action_byName"
+        android:title="@string/name"
+        appcompat:showAsAction="never" />
+    <item android:id="@+id/action_byDate"
+        android:title="@string/date"
+        appcompat:showAsAction="never" />
+</menu>
