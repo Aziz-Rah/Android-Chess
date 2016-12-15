@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +39,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
     boolean illegal = false;
     boolean enPassantMove = false;
     boolean castleMove = false;
+    boolean pawnPromoted = false;
     Piece checkPiece = null;
     Board board;
     int player = 0;
@@ -124,6 +126,9 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                     endPos = startRow*8 + ((startCol+endCol)/2);
                     adapter.move(startPos, endPos);
                     castleMove = false;
+                } else if(pawnPromoted) {
+                    adapter.promote(squarePosition[1], player);
+                    pawnPromoted = false;
                 }
 
                 prevMove[0] = squarePosition[0];
@@ -232,6 +237,25 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
     }
 
     /*
+    private void getPromotion() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(PlayGame.this);
+        alert.setTitle("Pawn Promotion");
+        alert.setMessage("Enter Q for queen, B for bishop, N for knight, or R for rook");
+
+        final EditText input = new EditText(PlayGame.this);
+        alert.setView(input);
+
+        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                promotion = input.getText().toString();
+            }
+        });
+
+        alert.show();
+    }
+    */
+
+    /*
    0 = Checkmate
    1 = Bad input
    2 = Normal
@@ -266,44 +290,17 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
             //CHECK DRAW
 
 
-            /* TO AMY: PROMOTION LOGIC NEEDS TO BE REDONE. Not sure how to go about that :/
-            // checks for promotion
+
+            // checks for promotion (promote to queen)
             if(piece.getText().charAt(1) == 'p') {
-                if(endRow == 0) {
-                    if(move.length() == 5) {
+                if(endRow == 0 || endRow == 7) {
+                    if(endRow == 0)
                         board.pieces[endRow][endCol] = new Queen(endRow, endCol, "wQ");
-                        board.pieces[endRow][endCol].hasMoved = true;
-                    } else if(move.charAt(6) == 'R' || move.charAt(6) == 'N' || move.charAt(6) == 'B'){
-                        if(move.charAt(6) == 'R')
-                            board.pieces[endRow][endCol] = new Rook(endRow, endCol, "wR");
-                        else if(move.charAt(6) == 'N')
-                            board.pieces[endRow][endCol] = new Knight(endRow, endCol, "wN");
-                        else if(move.charAt(6) == 'B')
-                            board.pieces[endRow][endCol] = new Bishop(endRow, endCol, "wB");
-
-                        board.pieces[endRow][endCol].hasMoved = true;
-                    } else {
-                        System.out.println("\nError: Incorrect promotion type\n");
-                    }
-                } else if(endRow == 7) {
-                    if(move.length() == 5) {
+                    else
                         board.pieces[endRow][endCol] = new Queen(endRow, endCol, "bQ");
-                        board.pieces[endRow][endCol].hasMoved = true;
-                    } else if(move.charAt(6) == 'R' || move.charAt(6) == 'N' || move.charAt(6) == 'B'){
-                        if(move.charAt(6) == 'R')
-                            board.pieces[endRow][endCol] = new Rook(endRow, endCol, "bR");
-                        else if(move.charAt(6) == 'N')
-                            board.pieces[endRow][endCol] = new Knight(endRow, endCol, "bN");
-                        else if(move.charAt(6) == 'B')
-                            board.pieces[endRow][endCol] = new Bishop(endRow, endCol, "bB");
-
-                        board.pieces[endRow][endCol].hasMoved = true;
-                    } else {
-                        System.out.println("\nError: Incorrect promotion type\n");
-                    }
+                    pawnPromoted = true;
                 }
             }
-            */
 
             // check if en passant move is possible on next turn
             if(player == 0 && piece.getText() == "wp" && startRow == 6 && endRow == 4)

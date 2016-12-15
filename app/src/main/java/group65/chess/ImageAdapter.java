@@ -66,6 +66,17 @@ public class ImageAdapter extends BaseAdapter {
         mThumbIds[start] = R.drawable.blank;
     }
 
+    public void remove(int pos) {
+        mThumbIds[pos] = R.drawable.blank;
+    }
+
+    public void promote(int pos, int color) {
+        if(color == 0)
+            mThumbIds[pos] = R.drawable.w_queen;
+        else
+            mThumbIds[pos] = R.drawable.b_queen;
+    }
+
     // references to pieces (images)
     private Integer[] mThumbIds = {
             R.drawable.b_rook, R.drawable.b_knight, R.drawable.b_bishop, R.drawable.b_queen,
