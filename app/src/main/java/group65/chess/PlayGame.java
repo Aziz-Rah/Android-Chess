@@ -219,6 +219,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                 Toast.LENGTH_LONG).show();
                 */
 
+        illegal = true;
         // checks for correct color piece
         if(piece != null && ((player == 0 && piece.getText().charAt(0) != 'w')
                 || (player == 1 && piece.getText().charAt(0) != 'b')) ) {
@@ -312,11 +313,13 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                 if(board.pieces[startRow][endCol].getText() == "bp") {
                     board.movePiece(piece, endRow, endCol);
                     board.removePiece(startRow, endCol);
+                    return 2;
                 }
             } else if(piece != null && board.pieces[startRow][startCol].getText() == "bp") {
                 if(board.pieces[startRow][endCol].getText() == "wp") {
                     board.movePiece(piece, endRow, endCol);
                     board.removePiece(startRow, endCol);
+                    return 2;
                 }
             }
             enPassant = false;
@@ -328,6 +331,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                     board.movePiece(piece, endRow, endCol);
                     Piece rook = board.pieces[endRow][7];
                     board.movePiece(rook, endRow, 5);
+                    return 2;
                 } else {
                     //System.out.println("\nIllegal move, try again\n");
                     return 1;
@@ -337,6 +341,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                     board.movePiece(piece, endRow, endCol);
                     Piece rook = board.pieces[endRow][0];
                     board.movePiece(rook, endRow, 3);
+                    return 2;
                 } else {
                     //System.out.println("\nIllegal move, try again\n");
                     return 1;
@@ -344,7 +349,10 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
             }
         }
 
-        return 2;
+        if (!illegal)
+            return 2;
+        else
+            return 1;
     }
 
     /**
