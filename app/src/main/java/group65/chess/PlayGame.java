@@ -116,6 +116,14 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                 if(enPassantMove) {
                     adapter.remove(startRow*8 + endCol%8);
                     enPassantMove = false;
+                } else if(castleMove) {
+                    int startPos, endPos;
+                    startPos = startRow*8;
+                    if(startCol+2 == endCol)
+                        startPos += 7;
+                    endPos = startRow*8 + ((startCol+endCol)/2);
+                    adapter.move(startPos, endPos);
+                    castleMove = false;
                 }
 
                 prevMove[0] = squarePosition[0];
@@ -318,7 +326,6 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                     return 0;
             }
         }
-        // TO AMY: Can you fix the enPassant stuff?
         // checks for en Passant move
         else if(enPassant == true && board.pieces[startRow][endCol] != null) {
             if(player == 0 && board.pieces[startRow][startCol].getText() == "wp") {
@@ -348,6 +355,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                     board.movePiece(piece, endRow, endCol);
                     Piece rook = board.pieces[endRow][7];
                     board.movePiece(rook, endRow, 5);
+                    castleMove = true;
                     return 2;
                 } else {
                     //System.out.println("\nIllegal move, try again\n");
@@ -358,6 +366,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                     board.movePiece(piece, endRow, endCol);
                     Piece rook = board.pieces[endRow][0];
                     board.movePiece(rook, endRow, 3);
+                    castleMove = true;
                     return 2;
                 } else {
                     //System.out.println("\nIllegal move, try again\n");
