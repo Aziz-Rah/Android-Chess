@@ -24,4 +24,7 @@
     <string name="ai">AI</string>
     <string name="draw">Draw</string>
     <string name="resign">Resign</string>
+
+    <string name="white_turn">White\'s Turn</string>
+    <string name="black_turn">Black\'s Turn</string>
 </resources>

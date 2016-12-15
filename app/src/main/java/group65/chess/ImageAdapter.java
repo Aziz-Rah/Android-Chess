@@ -61,6 +61,11 @@ public class ImageAdapter extends BaseAdapter {
         return imageView;
     }
 
+    public void move(int start, int end) {
+        mThumbIds[end] = mThumbIds[start];
+        mThumbIds[start] = R.drawable.blank;
+    }
+
     // references to pieces (images)
     private Integer[] mThumbIds = {
             R.drawable.b_rook, R.drawable.b_knight, R.drawable.b_bishop, R.drawable.b_queen,
