@@ -31,14 +31,18 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
     private View[] squareClick;
     private int[] squarePosition;
     private TextView turn;
+    private int[] prevMove;
 
     boolean gameStarted = false;
     boolean enPassant = false;
     boolean illegal = false;
+    boolean enPassantMove = false;
+    boolean castleMove = false;
     Piece checkPiece = null;
     Board board;
     int player = 0;
     int startRow, startCol, endRow, endCol;
+    String promotion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +64,8 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
             board.fill();
             board.fillList();
             gameStarted = true;
+            prevMove = new int[2];
+            prevMove[0] = -1;
         }
 
         // grid view (chessboard and pieces)
@@ -68,16 +74,6 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
         gridview.setOnItemClickListener(this);
         this.chessboard = gridview;
 
-        /*
-        // displays position of chess piece in grid view
-        gridview.setOnItemClickListener(new OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v,
-                                    int position, long id) {
-                Toast.makeText(PlayGame.this, "" + position,
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
-        */
     }
 
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -112,10 +108,18 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
             else if(move == 1)
                 Toast.makeText(PlayGame.this, "Illegal move", Toast.LENGTH_SHORT).show();
             else {
-                Toast.makeText(PlayGame.this, "Legal move", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(PlayGame.this, "Legal move", Toast.LENGTH_SHORT).show();
                 adapter.move(squarePosition[0], squarePosition[1]);
                 adapter.notifyDataSetChanged();
                 chessboard.setAdapter(adapter);
+
+                if(enPassantMove) {
+                    adapter.remove(startRow*8 + endCol%8);
+                    enPassantMove = false;
+                }
+
+                prevMove[0] = squarePosition[0];
+                prevMove[1] = squarePosition[1];
 
                 changeTurn();
 
@@ -157,7 +161,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.action_undo:
-                // undo
+                undo();
                 return true;
             case R.id.action_ai:
                 // ai
@@ -170,6 +174,26 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void undo() {
+        if(prevMove[0] != -1) {
+            adapter.move(prevMove[1], prevMove[0]);
+            adapter.notifyDataSetChanged();
+            chessboard.setAdapter(adapter);
+
+            int startRow = prevMove[1]/8;
+            int startCol = prevMove[1]%8;
+            int endRow = prevMove[0]/8;
+            int endCol = prevMove[0]%8;
+            Piece piece = board.getPiece(startRow, startCol);
+            board.movePiece(piece, endRow, endCol);
+
+            prevMove[0] = -1;
+            changeTurn();
+        } else {
+            Toast.makeText(PlayGame.this, "You can only undo once", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -206,18 +230,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
    white player = 0, black player = 1
    */
     public int chess(int startRow, int startCol, int endRow, int endCol, int player, Board board){
-        /*
-        Toast.makeText(PlayGame.this, "Entering chess with: (" + startRow + ", " + startCol
-                        + ") to (" + endRow + ", " + endCol + ")",
-                Toast.LENGTH_LONG).show();
-                */
-
         Piece piece = board.getPiece(startRow, startCol);
-
-        /*
-        Toast.makeText(PlayGame.this, "Start piece is: " + piece.getText(),
-                Toast.LENGTH_LONG).show();
-                */
 
         illegal = true;
         // checks for correct color piece
@@ -292,8 +305,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
 
             // checks for check and checkmate
             if(check(piece, board) == 1) {
-                //System.out.println("\nCheck\n");
-                //Make a toast for check?
+                Toast.makeText(PlayGame.this, "Check", Toast.LENGTH_SHORT).show();
                 checkPiece = piece;
             }
             else if(check(piece, board) == 2) {
@@ -313,16 +325,21 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                 if(board.pieces[startRow][endCol].getText() == "bp") {
                     board.movePiece(piece, endRow, endCol);
                     board.removePiece(startRow, endCol);
+                    enPassantMove = true;
+                    enPassant = false;
                     return 2;
                 }
             } else if(piece != null && board.pieces[startRow][startCol].getText() == "bp") {
                 if(board.pieces[startRow][endCol].getText() == "wp") {
                     board.movePiece(piece, endRow, endCol);
                     board.removePiece(startRow, endCol);
+                    enPassantMove = true;
+                    enPassant = false;
                     return 2;
                 }
             }
             enPassant = false;
+            enPassantMove = false;
         }
         // checks for castling move
         else if(piece != null && piece.getText().charAt(1) == 'K' && piece.hasMoved == false) {
