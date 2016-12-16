@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 
 import group65.chess.model.Bishop;
 import group65.chess.model.Board;
+import group65.chess.model.King;
 import group65.chess.model.Knight;
 import group65.chess.model.Pawn;
 import group65.chess.model.Piece;
@@ -531,17 +532,37 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
 
         int row = king.getRow();
         int col = king.getCol();
-        boolean knight = false;
-        boolean pawn = false;
+        int pRow = piece.getRow();
+        int pCol = piece.getCol();
+        String pText = piece.getText();
+        Piece p = null;
         boolean w = false;
+        int n = 5;
+
+    /*  N KEY:
+        0 = knight
+        1 = pawn
+        2 = queen
+        3 = bishop
+        4 = rook
+     */
+
         if (king.getText().charAt(0) == 'w')
-            w = true;;
+            w = true;
 
         if (piece instanceof Knight)
-            knight = true;
+            n = 0;
         if (piece instanceof Pawn)
-            pawn = true;
+            n = 1;
+        if (piece instanceof Queen)
+            n = 2;
+        if (piece instanceof Bishop)
+            n = 3;
+        if (piece instanceof Rook)
+            n = 4;
 
+        if (n == 5)
+            System.out.println("ERROR: N ISN'T THE CORRECT VALUE");
 
 
 
@@ -552,135 +573,573 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
         //Stores every location that leads to an enemy piece
         boolean[][] storage = new boolean[8][8];
 
-        if (row > 0 && col > 0 && king.isValidMove(board,row-1,col-1)){	//topleft
+        if (row > 0 && col > 0 && king.isValidMove(board,row-1,col-1)){    //topleft
+            board.pieces[pRow][pCol] = null;
             count++;
             for (int i = 0; i < 16; i++){
                 if (w){
                     if (board.list[1][i].isValidMove(board, row-1, col-1)){
                         count--;
+                        switch (n){
+                            case 0: {
+                                p = new Knight(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                            case 1: {
+                                p = new Pawn(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                            case 2: {
+                                p = new Queen(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                            case 3: {
+                                p = new Bishop(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                            case 4: {
+                                p = new Rook(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                        }
                         break;
                     }
                 }
                 else if (board.list[0][i].isValidMove(board, row-1, col-1)){
                     count--;
+                    switch (n){
+                        case 0: {
+                            p = new Knight(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                        case 1: {
+                            p = new Pawn(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                        case 2: {
+                            p = new Queen(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                        case 3: {
+                            p = new Bishop(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                        case 4: {
+                            p = new Rook(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                    }
                     break;
                 }
             }
         }
-        if (row > 0 && king.isValidMove(board,row-1,col)) {		//topmid
+        if (row > 0 && king.isValidMove(board,row-1,col)) {       //topmid
+            board.pieces[pRow][pCol] = null;
             count++;
             for (int i = 0; i < 16; i++){
                 if (w){
                     if (board.list[1][i].isValidMove(board, row-1, col)){
                         count--;
+                        switch (n){
+                            case 0: {
+                                p = new Knight(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                            case 1: {
+                                p = new Pawn(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                            case 2: {
+                                p = new Queen(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                            case 3: {
+                                p = new Bishop(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                            case 4: {
+                                p = new Rook(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                        }
                         break;
                     }
                 }
                 else if (board.list[0][i].isValidMove(board, row-1, col)){
                     count--;
+                    switch (n){
+                        case 0: {
+                            p = new Knight(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                        case 1: {
+                            p = new Pawn(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                        case 2: {
+                            p = new Queen(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                        case 3: {
+                            p = new Bishop(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                        case 4: {
+                            p = new Rook(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                    }
                     break;
                 }
             }
         }
-        if (row > 0 && col < 7 && king.isValidMove(board,row-1,col+1)) {	//topright
+        if (row > 0 && col < 7 && king.isValidMove(board,row-1,col+1)) {   //topright
+            board.pieces[pRow][pCol] = null;
             count++;
             for (int i = 0; i < 16; i++){
                 if (w){
                     if (board.list[1][i].isValidMove(board, row-1, col+1)){
                         count--;
+                        switch (n){
+                            case 0: {
+                                p = new Knight(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                            case 1: {
+                                p = new Pawn(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                            case 2: {
+                                p = new Queen(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                            case 3: {
+                                p = new Bishop(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                            case 4: {
+                                p = new Rook(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                        }
                         break;
                     }
                 }
                 else if (board.list[0][i].isValidMove(board, row-1, col+1)){
                     count--;
+                    switch (n){
+                        case 0: {
+                            p = new Knight(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                        case 1: {
+                            p = new Pawn(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                        case 2: {
+                            p = new Queen(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                        case 3: {
+                            p = new Bishop(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                        case 4: {
+                            p = new Rook(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                    }
                     break;
                 }
             }
         }
-        if (col > 0 && king.isValidMove(board,row,col-1)) {		//midleft
+        if (col > 0 && king.isValidMove(board,row,col-1)) {       //midleft
+            board.pieces[pRow][pCol] = null;
             count++;
             for (int i = 0; i < 16; i++){
                 if (w){
                     if (board.list[1][i].isValidMove(board, row, col-1)){
                         count--;
+                        switch (n){
+                            case 0: {
+                                p = new Knight(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                            case 1: {
+                                p = new Pawn(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                            case 2: {
+                                p = new Queen(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                            case 3: {
+                                p = new Bishop(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                            case 4: {
+                                p = new Rook(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                        }
                         break;
                     }
                 }
                 else if (board.list[0][i].isValidMove(board, row, col-1)){
                     count--;
+                    switch (n){
+                        case 0: {
+                            p = new Knight(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                        case 1: {
+                            p = new Pawn(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                        case 2: {
+                            p = new Queen(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                        case 3: {
+                            p = new Bishop(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                        case 4: {
+                            p = new Rook(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                    }
                     break;
                 }
             }
         }
-        if (col < 7 && king.isValidMove(board,row,col+1)) {		//midright
+        if (col < 7 && king.isValidMove(board,row,col+1)) {       //midright
+            board.pieces[pRow][pCol] = null;
             count++;
             for (int i = 0; i < 16; i++){
                 if (w){
                     if (board.list[1][i].isValidMove(board, row, col+1)){
                         count--;
+                        switch (n){
+                            case 0: {
+                                p = new Knight(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                            case 1: {
+                                p = new Pawn(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                            case 2: {
+                                p = new Queen(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                            case 3: {
+                                p = new Bishop(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                            case 4: {
+                                p = new Rook(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                        }
                         break;
                     }
                 }
                 else if (board.list[0][i].isValidMove(board, row, col+1)){
                     count--;
+                    switch (n){
+                        case 0: {
+                            p = new Knight(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                        case 1: {
+                            p = new Pawn(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                        case 2: {
+                            p = new Queen(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                        case 3: {
+                            p = new Bishop(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                        case 4: {
+                            p = new Rook(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                    }
                     break;
                 }
             }
         }
-        if (row < 7 && col > 0 && king.isValidMove(board,row+1,col-1)) {	//bottomleft
+        if (row < 7 && col > 0 && king.isValidMove(board,row+1,col-1)) {   //bottomleft
             count++;
+            board.pieces[pRow][pCol] = null;
             for (int i = 0; i < 16; i++){
                 if (w){
                     if (board.list[1][i].isValidMove(board, row+1, col-1)){
                         count--;
+                        switch (n){
+                            case 0: {
+                                p = new Knight(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                            case 1: {
+                                p = new Pawn(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                            case 2: {
+                                p = new Queen(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                            case 3: {
+                                p = new Bishop(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                            case 4: {
+                                p = new Rook(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                        }
                         break;
                     }
                 }
                 else if (board.list[0][i].isValidMove(board, row+1, col-1)){
                     count--;
+                    switch (n){
+                        case 0: {
+                            p = new Knight(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                        case 1: {
+                            p = new Pawn(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                        case 2: {
+                            p = new Queen(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                        case 3: {
+                            p = new Bishop(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                        case 4: {
+                            p = new Rook(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                    }
                     break;
                 }
             }
         }
-        if (row < 7 && king.isValidMove(board,row+1,col)) {		//bottommid
+        if (row < 7 && king.isValidMove(board,row+1,col)) {       //bottommid
             count++;
+            board.pieces[pRow][pCol] = null;
             for (int i = 0; i < 16; i++){
                 if (w){
                     if (board.list[1][i].isValidMove(board, row+1, col)){
                         count--;
+                        switch (n){
+                            case 0: {
+                                p = new Knight(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                            case 1: {
+                                p = new Pawn(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                            case 2: {
+                                p = new Queen(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                            case 3: {
+                                p = new Bishop(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                            case 4: {
+                                p = new Rook(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                        }
                         break;
                     }
                 }
                 else if (board.list[0][i].isValidMove(board, row+1, col)){
                     count--;
+                    switch (n){
+                        case 0: {
+                            p = new Knight(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                        case 1: {
+                            p = new Pawn(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                        case 2: {
+                            p = new Queen(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                        case 3: {
+                            p = new Bishop(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                        case 4: {
+                            p = new Rook(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                    }
                     break;
                 }
             }
         }
-        if (row < 7 && col < 7 && king.isValidMove(board,row+1,col+1)) {	//bottomright
+        if (row < 7 && col < 7 && king.isValidMove(board,row+1,col+1)) {   //bottomright
             count++;
+            board.pieces[pRow][pCol] = null;
             for (int i = 0; i < 16; i++){
                 if (w){
                     if (board.list[1][i].isValidMove(board, row+1, col+1)){
                         count--;
+                        switch (n){
+                            case 0: {
+                                p = new Knight(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                            case 1: {
+                                p = new Pawn(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                            case 2: {
+                                p = new Queen(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                            case 3: {
+                                p = new Bishop(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                            case 4: {
+                                p = new Rook(pRow, pCol, pText);
+                                board.addPiece(p);
+                                break;
+                            }
+                        }
                         break;
                     }
                 }
                 else if (board.list[0][i].isValidMove(board, row+1, col+1)){
                     count--;
+                    switch (n){
+                        case 0: {
+                            p = new Knight(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                        case 1: {
+                            p = new Pawn(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                        case 2: {
+                            p = new Queen(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                        case 3: {
+                            p = new Bishop(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                        case 4: {
+                            p = new Rook(pRow, pCol, pText);
+                            board.addPiece(p);
+                            break;
+                        }
+                    }
                     break;
                 }
             }
         }
 
-        if (w)
-            w = false;
-        else
-            w = true;
-
+        //Black king is in check -> w = false
         //Check knight and Pawn, then 2D, then 1D
+        //in list, 1 -> white,
         if (count == 0){
             int count2 = 0;
+
             if (w){
                 for (int i = 0; i < 16; i++){
                     if (board.list[1][i].isValidMove(board, row, col))
@@ -699,19 +1158,22 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
             }
 
             boolean dontRun = false;
+            boolean skipToEnd = false;
 
-            if (knight || pawn){
+            if (n == 0 || n == 1){
                 storage[piece.getRow()][piece.getCol()] = true;
                 dontRun = true;
             }
 
+            //Black king in check -> w = false
             if (!dontRun){
                 outerloop:
                 for (int j = row+1, k = col+1; j < 8; j++, k++){
                     if(k == 8)
                         break;
-                    // Bottom-Right
-                    if (board.pieces[j][k] != null)
+                        // Bottom-Right
+
+                    else if (board.pieces[j][k] == null)
                         storage[j][k] = true;
                     else if (board.pieces[j][k] instanceof Queen || board.pieces[j][k] instanceof Bishop){
                         if (w){
@@ -726,10 +1188,8 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                             break outerloop;
                         }
                     }
+
                     else {
-                        if(j == row && k == col)
-                            break outerloop;
-                        dontRun = true;
                         break outerloop;
                     }
 
@@ -742,8 +1202,8 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                 for (int j = row+1, k = col-1; j < 8; j++, k--){
                     if(k == -1)
                         break;
-                    // Bottom-Left
-                    if (board.pieces[j][k] != null)
+                        // Bottom-Left
+                    else if (board.pieces[j][k] == null)
                         storage[j][k] = true;
                     else if (board.pieces[j][k] instanceof Queen || board.pieces[j][k] instanceof Bishop){
                         if (w){
@@ -758,10 +1218,8 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                             break outerloop;
                         }
                     }
+
                     else {
-                        if(j == row && k == col)
-                            break outerloop;
-                        dontRun = true;
                         break outerloop;
                     }
 
@@ -776,7 +1234,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                     // Top-Right
                     if(k == 8)
                         break;
-                    if (board.pieces[j][k] != null)
+                    else if (board.pieces[j][k] == null)
                         storage[j][k] = true;
                     else if (board.pieces[j][k] instanceof Queen || board.pieces[j][k] instanceof Bishop){
                         if (w){
@@ -791,10 +1249,8 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                             break outerloop;
                         }
                     }
+
                     else {
-                        if(j == row && k == col)
-                            break outerloop;
-                        dontRun = true;
                         break outerloop;
                     }
 
@@ -808,7 +1264,8 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                     // Top-Left
                     if(k == -1)
                         break;
-                    if (board.pieces[j][k] != null)
+
+                    else if (board.pieces[j][k] == null)
                         storage[j][k] = true;
                     else if (board.pieces[j][k] instanceof Queen || board.pieces[j][k] instanceof Bishop){
                         if (w){
@@ -822,12 +1279,10 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                             dontRun = true;
                             break outerloop;
                         }
-                        else {
-                            if(j == row && k == col)
-                                break outerloop;
-                            dontRun = true;
-                            break outerloop;
-                        }
+                    }
+
+                    else {
+                        break outerloop;
                     }
 
                 }
@@ -836,7 +1291,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
             }
 
             if (!dontRun){
-                for (int j = row; j >= 0; j--){			// Up
+                for (int j = row; j >= 0; j--){          // Up
                     if (board.pieces[j][col] != null)
                         storage[j][col] = true;
                     else if (board.pieces[j][col] instanceof Queen || board.pieces[j][col] instanceof Rook){
@@ -863,7 +1318,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                     clear(storage);
             }
             if (!dontRun){
-                for (int j = col; j <= 7; j++){			// Right
+                for (int j = col; j <= 7; j++){          // Right
                     if (board.pieces[row][j] != null)
                         storage[row][j] = true;
                     else if (board.pieces[row][j] instanceof Queen || board.pieces[row][j] instanceof Rook){
@@ -891,7 +1346,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
             }
 
             if (!dontRun){
-                for (int j = row; j <= 7; j++){			// Down
+                for (int j = row; j <= 7; j++){          // Down
                     if (board.pieces[j][col] != null)
                         storage[j][col] = true;
                     else if (board.pieces[j][col] instanceof Queen || board.pieces[j][col] instanceof Rook){
@@ -919,7 +1374,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
             }
 
             if (!dontRun){
-                for (int j = col; j >= 0; j--){			// Left
+                for (int j = col; j >= 0; j--){          // Left
                     if (board.pieces[row][j] != null)
                         storage[row][j] = true;
                     else if (board.pieces[row][j] instanceof Queen || board.pieces[row][j] instanceof Rook){
@@ -945,7 +1400,10 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                 if(!dontRun)
                     clear(storage);
             }
-            if (cmHelper(board, storage, w))
+
+            //Black king in check, w = false
+
+            if (cmHelper(board,storage,w))
                 return false;
             else
                 return true;
@@ -975,12 +1433,13 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
      */
     static boolean cmHelper(Board board, boolean[][] b, boolean w){
 
+        boolean guarded = false;
         if (w){
             for (int i = 0; i < 8; i++){
                 for (int j = 0; j < 8; j++){
                     if (b[i][j]){
                         for (int k = 0; k < 16; k++){
-                            if (board.list[0][k].isValidMove(board, i, j))
+                            if (board.list[0][k].isValidMove(board, i, j) && !(board.list[0][k] instanceof King))
                                 return true;
                         }
                     }
@@ -992,7 +1451,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                 for (int j = 0; j < 8; j++){
                     if (b[i][j]){
                         for (int k = 0; k < 16; k++){
-                            if (board.list[1][k].isValidMove(board, i, j))
+                            if (board.list[1][k].isValidMove(board, i, j) && !(board.list[1][k] instanceof King))
                                 return true;
                         }
                     }
