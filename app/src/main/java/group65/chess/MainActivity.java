@@ -10,9 +10,12 @@ import android.widget.AdapterView;
 import android.view.View;
 import android.content.Intent;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
     private ListView listView;
     private String[] activities;
+    public ArrayList<Recorder> rec = new ArrayList<Recorder>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +51,9 @@ public class MainActivity extends AppCompatActivity {
     // launches play game screen
     private void startGame() {
         Intent intent = new Intent(this, PlayGame.class);
+        intent.putExtra("recorder", rec);
         startActivity(intent);
+
     }
 
     // launches recorded games screen
