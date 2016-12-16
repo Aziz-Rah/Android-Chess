@@ -18,6 +18,10 @@ import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+
 import group65.chess.model.Bishop;
 import group65.chess.model.Board;
 import group65.chess.model.Knight;
@@ -45,6 +49,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
     int player = 0;
     int startRow, startCol, endRow, endCol;
     String promotion;
+    String gameName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +72,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
             board.fillList();
             gameStarted = true;
             prevMove = new int[2];
-            prevMove[0] = -1;
+            prevMove[0] = -2;
         }
 
         // grid view (chessboard and pieces)
@@ -75,7 +80,6 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
         gridview.setAdapter(adapter);
         gridview.setOnItemClickListener(this);
         this.chessboard = gridview;
-
     }
 
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -105,8 +109,11 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
             int t1 = startRow*8 + startCol%8;
             int move = chess(startRow, startCol, endRow, endCol, player, board);
 
-            if(move == 0)
+            if(move == 0) {
                 Toast.makeText(PlayGame.this, "Checkmate", Toast.LENGTH_SHORT).show();
+                adapter.move(squarePosition[0], squarePosition[1]);
+                end_checkmate();
+            }
             else if(move == 1)
                 Toast.makeText(PlayGame.this, "Illegal move", Toast.LENGTH_SHORT).show();
             else {
@@ -145,6 +152,17 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
         }
 
 
+    }
+
+    private void end_checkmate() {
+        String title;
+        if(player == 0)
+            title = "White";
+        else
+            title = "Black";
+
+        title += " Wins!";
+        endDialogs(title);
     }
 
     private int updateColor(int position) {
@@ -191,7 +209,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
     }
 
     private void undo() {
-        if(prevMove[0] != -1) {
+        if(prevMove[0] > -1) {
             adapter.move(prevMove[1], prevMove[0]);
             adapter.notifyDataSetChanged();
             chessboard.setAdapter(adapter);
@@ -206,8 +224,90 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
             prevMove[0] = -1;
             changeTurn();
         } else {
-            Toast.makeText(PlayGame.this, "You can only undo once", Toast.LENGTH_SHORT).show();
+            if(prevMove[0] == -2)
+                Toast.makeText(PlayGame.this, "No move to undo", Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(PlayGame.this, "You can only undo once", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void endDialogs(String title) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title);
+        builder.setMessage("Would you like to save this game?");
+
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+
+                AlertDialog.Builder alert = new AlertDialog.Builder(PlayGame.this);
+                alert.setTitle("Save game");
+                alert.setMessage("Enter a game title");
+
+                // Set an EditText view to get user input
+                final EditText input = new EditText(PlayGame.this);
+                alert.setView(input);
+
+                alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        gameName = input.getText().toString();
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(PlayGame.this);
+                        builder.setTitle("Want to play again?");
+
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                gameStarted = false;
+                                Intent intent = getIntent();
+                                startActivity(intent);
+                            }
+                        });
+
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                startActivity(new Intent(PlayGame.this, MainActivity.class));
+                            }
+                        });
+                        AlertDialog alert = builder.create();
+                        alert.show();
+                    }
+                });
+
+                alert.show();
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(PlayGame.this);
+                builder.setTitle("Want to play again?");
+
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        gameStarted = false;
+                        Intent intent = getIntent();
+                        startActivity(intent);
+                    }
+                });
+
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        startActivity(new Intent(PlayGame.this, MainActivity.class));
+                    }
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     private void draw() {
@@ -218,7 +318,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
         alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
            public void onClick(DialogInterface dialog, int which) {
                dialog.dismiss();
-               startActivity(new Intent(PlayGame.this, MainActivity.class));
+               endDialogs("Draw");
            }
         });
 
@@ -233,7 +333,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
     }
 
     private void resign() {
-        startActivity(new Intent(PlayGame.this, MainActivity.class));
+        endDialogs("Resign");
     }
 
     /*
