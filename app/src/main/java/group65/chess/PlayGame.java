@@ -21,6 +21,8 @@ import android.widget.Toast;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
+import java.util.ArrayList;
 
 import group65.chess.model.Bishop;
 import group65.chess.model.Board;
@@ -31,7 +33,7 @@ import group65.chess.model.Piece;
 import group65.chess.model.Queen;
 import group65.chess.model.Rook;
 
-public class PlayGame extends AppCompatActivity implements OnItemClickListener {
+public class PlayGame extends AppCompatActivity implements OnItemClickListener{
     private GridView chessboard;
     private ImageAdapter adapter;
     private View[] squareClick;
@@ -51,6 +53,8 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
     int startRow, startCol, endRow, endCol;
     String promotion;
     String gameName;
+    Recorder r = new Recorder();
+    ArrayList<Recorder> rec;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +67,11 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(false);
         turn = (TextView)findViewById(R.id.textView);
+
+        //Adds this recorder to the Recorder arraylist already created
+        Intent i = getIntent();
+        ArrayList<Recorder> rec = (ArrayList<Recorder>) i.getSerializableExtra("recorder");
+        rec.add(r);
 
         if(!gameStarted) {
             squareClick = new View[2];
@@ -102,10 +111,10 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
             squareClick[1] = view;
             squarePosition[1] = position;
 
-            int startRow = squarePosition[0]/8;
-            int startCol = squarePosition[0]%8;
-            int endRow = squarePosition[1]/8;
-            int endCol = squarePosition[1]%8;
+            startRow = squarePosition[0]/8;
+            startCol = squarePosition[0]%8;
+            endRow = squarePosition[1]/8;
+            endCol = squarePosition[1]%8;
 
             int t1 = startRow*8 + startCol%8;
             int move = chess(startRow, startCol, endRow, endCol, player, board);
@@ -252,6 +261,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                 alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         gameName = input.getText().toString();
+                        r.gameTitle = gameName;
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(PlayGame.this);
                         builder.setTitle("Want to play again?");
@@ -284,7 +294,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-
+                rec.remove(r);
                 AlertDialog.Builder builder = new AlertDialog.Builder(PlayGame.this);
                 builder.setTitle("Want to play again?");
 
@@ -365,6 +375,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
     public int chess(int startRow, int startCol, int endRow, int endCol, int player, Board board){
         Piece piece = board.getPiece(startRow, startCol);
 
+        r.addToRecorder(startRow, startCol, endRow, endCol);
         illegal = true;
         // checks for correct color piece
         if(piece != null && ((player == 0 && piece.getText().charAt(0) != 'w')
